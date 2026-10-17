@@ -1,0 +1,10 @@
+{
+  "kind": "evm_contracts",
+  "contracts": [
+    {
+      "contract": "ERC20TLaunch",
+      "constructorArgs": ["$owner"]
+    }
+  ],
+  "notes": "Deploys the accepted ERC20TLaunch application with the paying wallet as its immutable owner. Its nonpayable constructor makes no external calls and creates no token or pool. The owner can later perform a one-use Ethereum mainnet launch through the existing ERC20TFactory.createAndLaunchAtPrice. The application fixes erc20t/ERC20T supply at 1 billion tokens, allocates 5% to the owner and 95% to single-sided liquidity subject to bounded rounding dust, and sets both initial token fee recipients to the owner. It enforces a 99% launch tax decaying by 100 bps every 60 seconds to 1%, verifies dependencies and the resulting configuration, and checks the liquidity position's locked recipient. Price, deadline and the first-only guard are inputs to that later owner transaction, not constructor arguments. Accepted preflight evidence records an occupied first factory slot; this manifest makes no first-token claim. Deployment does not execute the token launch or provide a token address or transaction receipt."
+}
