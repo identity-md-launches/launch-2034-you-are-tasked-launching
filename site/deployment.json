@@ -1,0 +1,6 @@
+{
+  "chainId": 1,
+  "controller": null,
+  "transactionHash": null,
+  "note": "Populate with the confirmed ERC20TLaunch application address from the deployment handoff. The token is read from the application after its separate owner-authorized launch."
+}

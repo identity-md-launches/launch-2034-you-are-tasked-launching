@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171916">
+  <meta name="description" content="erc20t / IMD. A new token on Adam’s ERC20T infrastructure. Explore the economics, tax schedule and verifiable Ethereum launch details.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://ethereum-rpc.publicnode.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>erc20t — New rules. Same chain.</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css"><script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="topline"><span>INDEPENDENT BY DESIGN</span><span><i class="dot"></i> ETHEREUM MAINNET <b>↗</b></span><span>ERC20T × IMD</span></div>
+<header class="nav wrap">
+  <a class="brand" href="#" aria-label="erc20t home"><span class="brand-icon" aria-hidden="true">t</span>erc20t<span class="brand-cross">↗</span></a>
+  <nav aria-label="Primary"><a href="#economics">The economics</a><a href="#tax">Tax curve</a><a href="#proof">Onchain proof</a></nav>
+  <button id="connect" class="button small dark">Connect wallet <span>↗</span></button>
+</header>
+<main id="main">
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="small-square"></span> A NEW CHAPTER IN ERC20T</p>
+      <h1 id="hero-title">SAME CHAIN.<br><span>NEW RULES.</span></h1>
+      <p class="hero-description">Meet <strong>erc20t.</strong> Built on Adam’s ERC20T infrastructure. Paired with <strong>$IMD.</strong> A billion tokens. One transparent launch.</p>
+      <div class="hero-actions"><a class="button lime" href="#launch">Explore the launch <span>↘</span></a><a class="text-link" href="#economics">Read the mechanics <span>↓</span></a></div>
+      <div class="hero-footnote"><span class="status-tag" id="hero-status">AWAITING LAUNCH</span><span id="hero-status-note">Contract address appears after onchain confirmation.</span></div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="art-grid"></div><div class="art-caption">ERC20T / IMD<br>ETHEREUM EDITION</div>
+      <div class="record"><div class="record-rings"></div><div class="record-label"><span>ERC</span><b>20t</b><small>BUILT TO BE ONCHAIN</small></div></div>
+      <div class="sticker">95%<span>TO THE POOL</span></div><div class="art-number">NO SHORTCUTS.<br>CHECK THE CHAIN.</div><div class="barcode">|||| ||| | |||| || | ||| ||||||<small>ERC20T—IMD—ETH</small></div>
+    </div>
+  </section>
+  <div class="ticker" aria-hidden="true"><span>1 BILLION TOKENS</span><b>✳</b><span>UNISWAP V4</span><b>✳</b><span>PAIRED WITH IMD</span><b>✳</b><span>99% → 1%</span><b>✳</b><span>VERIFY EVERYTHING</span></div>
+  <section class="section wrap" id="economics" aria-labelledby="economics-title">
+    <div class="section-heading"><div><p class="eyebrow">01 / THE ECONOMICS</p><h2 id="economics-title">ALL ON THE TABLE.</h2></div><p>Simple numbers. Explicit destinations.<br>No mystery allocations.</p></div>
+    <div class="metrics">
+      <article class="metric"><span class="metric-label">FIXED INITIAL SUPPLY <span>↗</span></span><h3>1<span>B</span></h3><p>1,000,000,000 ERC20T<br><small>18 decimals · Ethereum mainnet</small></p></article>
+      <article class="metric lime-card"><span class="metric-label">SINGLE-SIDED LIQUIDITY <span>✳</span></span><h3>95<span>%</span></h3><p>950,000,000 ERC20T<br><small>Burn-address position · tiny rounding dust remains</small></p></article>
+      <article class="metric"><span class="metric-label">CREATOR ALLOCATION <span>↗</span></span><h3>5<span>%</span></h3><p>50,000,000 ERC20T<br><small>Delivered to the designated owner</small></p></article>
+      <article class="metric"><span class="metric-label">RESTING TOKEN TAX <span>↘</span></span><h3>1<span>%</span></h3><p>100 basis points<br><small>Includes the protocol’s 15 bps share</small></p></article>
+    </div>
+    <div class="allocation"><div class="allocation-track"><span></span><i></i></div><div><span><i class="key-dot lime-dot"></i>95% / Liquidity</span><span><i class="key-dot ink-dot"></i>5% / Creator</span></div></div>
+    <div class="mechanics"><article><span class="index">[01]</span><h3>Created & launched together.</h3><p>The factory creates the token and initializes its IMD pool in one transaction. Failed checks revert the entire launch.</p></article><article><span class="index">[02]</span><h3>Liquidity, permanently locked.</h3><p>The initial Uniswap v4 position NFT goes to the infrastructure’s fixed burn address. Confirmation includes its owner and nonzero liquidity.</p></article><article><span class="index">[03]</span><h3>Owner powers, in the open.</h3><p>The creator owns 5% of supply and receives both fee streams. The underlying token retains owner controls; this is not a renounced token.</p></article></div>
+  </section>
+  <section class="tax-section" id="tax" aria-labelledby="tax-title"><div class="wrap tax-layout">
+    <div><p class="eyebrow">02 / THE LAUNCH SCHEDULE</p><h2 id="tax-title">HIGH AT FIRST.<br><span>LOW BY DESIGN.</span></h2><p>The token’s launch tax starts at <strong>99%</strong> and falls by one percentage point every minute. It reaches the <strong>1%</strong> resting tax after <strong>98 minutes</strong>. The protocol’s <strong>15 bps share is included</strong> in this tax. Collected fees are converted to ETH.</p><div class="tax-note"><span>!</span><p>Early trading carries a very high tax. The schedule below is an illustration. Check the token’s current onchain tax before trading.</p></div></div>
+    <div class="chart-card"><div class="chart-top"><span>EXPLORE THE TAX CURVE</span><span class="pill">SCHEDULE PREVIEW</span></div><div class="tax-readout"><strong id="preview-tax">99<span>%</span></strong><p>at minute <b id="preview-minute">0</b><br><small>100 bps decrease / 60 seconds</small></p></div>
+      <svg class="chart" viewBox="0 0 520 180" role="img" aria-label="Launch tax decreases from 99 percent to 1 percent over 98 minutes"><path class="chart-grid" d="M25 15H505M25 85H505M25 155H505"/><path class="chart-area" d="M25 17L495 154H505V165H25Z"/><path class="chart-line" d="M25 17L495 154H505"/><circle id="chart-cursor" cx="25" cy="17" r="6"/><text x="25" y="179">0 MIN</text><text x="252" y="179">49 MIN</text><text x="463" y="179">98 MIN</text></svg>
+      <label for="tax-slider" class="sr-only">Minutes since launch</label><input id="tax-slider" type="range" min="0" max="98" value="0"><div class="chart-footer"><span>99% at launch</span><span>1% resting tax</span></div>
+    </div>
+  </div></section>
+  <section class="section wrap" id="proof" aria-labelledby="proof-title">
+    <div class="section-heading"><div><p class="eyebrow">03 / TRUST THE RECEIPTS</p><h2 id="proof-title">PROOF OVER PROMISES.</h2></div><button id="refresh" class="button outline small">Refresh chain data <span>↻</span></button></div>
+    <div class="proof-grid"><article class="proof-panel"><div class="panel-head"><span>LAUNCH STATUS</span><span id="proof-status" class="status-tag">PENDING</span></div><h3 id="launch-headline">The next record is unwritten.</h3><p id="launch-description">This site does not yet have a confirmed launch receipt. Token and pool details will appear when the application reports a successful launch.</p><dl class="evidence-list"><div><dt>Token</dt><dd id="token-address">Awaiting launch</dd></div><div><dt>Launch transaction</dt><dd id="launch-transaction">Awaiting confirmation</dd></div><div><dt>Pool ID</dt><dd id="pool-id">Not initialized</dd></div><div><dt>Position NFT</dt><dd id="position-id">Not minted</dd></div><div><dt>Current token tax</dt><dd id="current-tax">Not live</dd></div><div><dt>Factory order</dt><dd id="launch-order">Unverified</dd></div></dl><div class="proof-actions"><a id="trade" class="button dark disabled" aria-disabled="true">Open on Uniswap <span>↗</span></a><button id="watch-token" class="button outline" disabled>Add to wallet <span>+</span></button></div><button id="download-proof" class="button outline full download-proof" disabled>Download verified receipt <span>↓</span></button></article>
+    <article class="proof-panel"><div class="panel-head"><span>FACTORY HISTORY</span><span class="mono">MAINNET / 1</span></div><div class="factory-count"><strong id="factory-count">≥1</strong><span>TOKEN ALREADY CREATED<br>AT THE INITIAL OBSERVATION</span></div><p id="history-status">The first slot is already occupied. This project makes no “first-ever” claim. Refresh for a complete factory event scan at a recent block.</p><a href="https://etherscan.io/address/0xBBe9d1EcBae3D811642f3DFFDF8bC5Ae8ea4514f" target="_blank" rel="noopener noreferrer" class="text-link">Inspect the first factory token <span>↗</span></a><div class="history-divider"></div><h4>Every important address.</h4><div id="contracts" class="contracts"></div></article></div>
+    <p class="data-note" id="data-status" role="status">Public chain reads are on demand. Nothing on this page implies a transaction has been sent.</p>
+  </section>
+  <section class="launch-section" id="launch" aria-labelledby="launch-title"><div class="wrap launch-layout">
+    <div class="launch-intro"><p class="eyebrow">04 / OWNER CONTROL ROOM</p><h2 id="launch-title">READY WHEN<br><span>YOU ARE.</span></h2><p>Review the economics, confirm the deployment, then launch from the designated owner wallet.</p><dl><dt>Designated owner & both fee recipients</dt><dd id="owner-display"></dd><dt>Initial capital</dt><dd>ERC20T only. No IMD deposit required.</dd><dt>Opening valuation</dt><dd>Indicative target: approximately $3,000 FDV.</dd></dl><p class="smallprint">The opening price defines an initial valuation, not cash backing or guaranteed sale proceeds. Gas is paid in ETH.</p></div>
+    <form id="launch-form" class="launch-form"><div class="panel-head"><span>CONFIGURE YOUR LAUNCH</span><span class="pill">OWNER ONLY</span></div>
+      <label for="controller">Deployed application address</label><div class="input-row"><input id="controller" name="controller" placeholder="Paste the confirmed ERC20TLaunch address" autocomplete="off" spellcheck="false" required><button id="load-controller" type="button" class="button dark small">Verify</button></div><p class="field-help" id="controller-help">Use the application address from the deployment handoff.</p>
+      <label for="price">Starting price <span>IMD per ERC20T</span></label><input id="price" name="price" value="0.00000054054054054" inputmode="decimal" autocomplete="off" required><div class="price-estimate"><span>Indicative fully diluted value</span><strong id="fdv">540.54 IMD</strong></div><p class="field-help">Suggested price uses a historical $5.55/IMD observation on 16 Oct 2026. Review the current IMD price before launching. <a href="https://dexscreener.com/ethereum/0xb07d640fd9e2eb9dc81b953c8e4fd006bdfeaf276010fb5418eb763ca15abfb3" target="_blank" rel="noopener noreferrer">Price source ↗</a></p>
+      <label class="check-row"><input id="allow-prior" type="checkbox"><span>I accept an early factory launch if other tokens already exist. The actual ordinal will be reported from chain events.</span></label>
+      <div class="launch-fixed"><span>CREATOR <b>5%</b></span><span>START TAX <b>99%</b></span><span>FLOOR <b>1%</b></span></div>
+      <button id="review" class="button lime full" type="submit">Review & simulate launch <span>↗</span></button><p id="launch-feedback" role="status" class="field-help">Connect the owner wallet to prepare a transaction.</p>
+    </form>
+  </div></section>
+  <section class="section wrap faq" aria-labelledby="faq-title"><div><p class="eyebrow">THE FINE PRINT, IN PLAIN ENGLISH</p><h2 id="faq-title">KNOW THE<br>MECHANICS.</h2></div><div class="faq-items"><details><summary>Is this the first ERC20T token?<span>+</span></summary><p>No first-ever claim is made. The factory’s first clone already existed when this project was prepared. The app scans all creation events and reports the exact ordinal only for a confirmed launch.</p></details><details><summary>What does “locked liquidity” mean?<span>+</span></summary><p>The factory’s token implementation mints the initial Uniswap v4 position NFT to its fixed burn address. The launch application checks that recipient and verifies nonzero liquidity in the correct pool. The owner cannot withdraw that position through this application. A lock does not guarantee a token price.</p></details><details><summary>Where do trading taxes go?<span>+</span></summary><p>Both the resting fee recipient and fee decay recipient are the designated owner at launch. The hook converts collected fees to ETH. Its protocol recipient receives a 15 bps share taken from the token tax: at the 1% resting rate, 15% of converted fees go to the protocol and 85% go to the owner. The conversion pool’s costs and price impact affect ETH payouts. The schedule is 99% initially, dropping by 100 bps every 60 seconds to 1%. The token retains the infrastructure’s owner permissions, including recipient and distributor controls. Resting-tax changes are blocked during the launch decay, then limited to 30–500 bps. Recheck live settings before trading.</p></details><details><summary>Why is the token address still pending?<span>+</span></summary><p>The application must first be deployed through the project handoff. Its owner then confirms the factory launch in their wallet. This site reads the resulting token address and verifies the transaction receipt; it never invents an address.</p></details><details><summary>Can I use any connected wallet?<span>+</span></summary><p>Any wallet can inspect chain data. Only the designated owner can launch. The app verifies Ethereum mainnet, the application bytecode and the wallet account before requesting a transaction.</p></details></div></section>
+  <div class="closing wrap" aria-hidden="true">erc20t<span>✳</span></div>
+</main>
+<footer class="wrap"><span>ERC20T / IMD · BUILT ON ETHEREUM</span><a href="./docs.html">Technical notes ↗</a><a href="#main">BACK TO TOP ↑</a></footer>
+<dialog id="review-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><span class="eyebrow">FINAL REVIEW</span><button id="close-dialog" type="button" aria-label="Close review">×</button></div><h2 id="dialog-title">ONE TRANSACTION.<br>MAKE IT COUNT.</h2><dl id="review-details" class="evidence-list"></dl><p class="dialog-warning">The initial trade tax is 99%. The creator receives 50 million tokens and both fee streams. Confirm these terms before signing.</p><button id="send-launch" class="button lime full">Confirm in wallet <span>↗</span></button><p id="send-status" role="status" class="field-help">Simulation succeeded. Your wallet will show the transaction and gas cost.</p></dialog>
+<div id="toast" role="status" class="toast" hidden></div>
+<noscript><p class="noscript">Enable JavaScript for wallet connection, launch simulation and onchain verification. The project information above remains available.</p></noscript>
+</body></html>

@@ -1,0 +1,113 @@
+{
+  "kind": "read-only-preflight",
+  "chainId": 1,
+  "blockNumber": 26208570,
+  "blockHash": "0xcf421c1991be2b26ad1ae40a056a335de97cb8c94b8ad53506d3a76f8106e597",
+  "blockTimestamp": "2026-10-17T00:04:47.000Z",
+  "factory": "0x801411c6aCeC4Fa80c75c5d3C0eAe13C84f8a173",
+  "history": {
+    "blockNumber": 26208570,
+    "blockHash": "0xcf421c1991be2b26ad1ae40a056a335de97cb8c94b8ad53506d3a76f8106e597",
+    "count": 5,
+    "tokens": [
+      {
+        "token": "0xBBe9d1EcBae3D811642f3DFFDF8bC5Ae8ea4514f",
+        "transactionHash": "0x5b34bbd33143fb92f0102539918cc1115f2fc4f4a44b134e8568b34c5b636ba6",
+        "blockNumber": 26208319,
+        "index": 441
+      },
+      {
+        "token": "0xA22aaa38a2F645D6adFFE88fEb95e147ec6d63F7",
+        "transactionHash": "0x80cf5ede169b00b635fd474ea68dd1f6fb2f5c18ac772428a489f6c34e871c47",
+        "blockNumber": 26208348,
+        "index": 3122
+      },
+      {
+        "token": "0x4DeC9296365Ec243C2638365273393cFf82F37e0",
+        "transactionHash": "0x932926d40a467b6c97bb0c057c8bd6c8b56ced85f76dd67884c9f03503edaa88",
+        "blockNumber": 26208382,
+        "index": 145
+      },
+      {
+        "token": "0xF86D547990fFb08C4c425eCEd8E50AFe1D270FC3",
+        "transactionHash": "0x4afe6c305b47493487329c1baa98f0bd8f7e544f0b7dc85762da3d8d8c76c13d",
+        "blockNumber": 26208402,
+        "index": 2729
+      },
+      {
+        "token": "0xA639FA428738787388a8290baC439B8fFBF9599a",
+        "transactionHash": "0x408799788fadadb5551d0c6df316d826bf805816586baeed6490eebb4068387c",
+        "blockNumber": 26208428,
+        "index": 278
+      }
+    ]
+  },
+  "firstSlotAvailable": false,
+  "quote": {
+    "address": "0xD34a99Bc0f67aE1bbd63C660e6d0b0dd03E263B7",
+    "symbol": "IMD",
+    "decimals": 18
+  },
+  "protocolFee": {
+    "bps": 15,
+    "recipient": "0x2ABD4B16a9663F4913F35A87A2C3078dF165bF12"
+  },
+  "feeConversion": {
+    "flags": [
+      true,
+      true
+    ],
+    "currency0": "0x0000000000000000000000000000000000000000",
+    "currency1": "0xD34a99Bc0f67aE1bbd63C660e6d0b0dd03E263B7",
+    "fee": 10000,
+    "tickSpacing": 60,
+    "hook": "0xc6C965Bd164c483e87d0B550671798e9A3602840",
+    "payoutAsset": "native ETH",
+    "protocolShare": "floor(convertedTaxETH * 15 / currentTaxBps); included in token tax"
+  },
+  "implementation": "0x2df7DCf4D19a7924e00AE96629CC1d1261670eEe",
+  "implementationHash": "0xd73decc05e33a0c746d08a72b5a8e1eb0ff4599dd557b45a7cc4462053862d38",
+  "dependencies": [
+    {
+      "address": "0x801411c6aCeC4Fa80c75c5d3C0eAe13C84f8a173",
+      "codeHash": "0x474f926e1425178a191768de94d3a734dec4b8e8ba8095699e511e8275ab1867"
+    },
+    {
+      "address": "0xed9A04Fa6693e754661A22502524DF9b1857e544",
+      "codeHash": "0x6b744df4b886fa50c6c3af8e14837d660494b63f21118e661d17e5cc06017ba1"
+    },
+    {
+      "address": "0xD34a99Bc0f67aE1bbd63C660e6d0b0dd03E263B7",
+      "codeHash": "0x79a1ae149d27d4aae006d4dd75cb834222c9623799bbf34359428aaf66fec3bf"
+    },
+    {
+      "address": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+      "codeHash": "0x77e36c08b19959a30dde46dec9abe6208e371ff2f56884a56fe1e1a53615528b"
+    },
+    {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "codeHash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131"
+    },
+    {
+      "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+      "codeHash": "0x785f1014552b7ce7d5fb7d0c970ca60edee94fd00425d7ca21609acac7ce1293"
+    },
+    {
+      "address": "0xc6C965Bd164c483e87d0B550671798e9A3602840",
+      "codeHash": "0xdacaaedc2f955bb870db5e10b08eb9711e7909d4f8bd7463c67df58a8d4f9fb8"
+    }
+  ],
+  "suggestedPriceX18": "540540540540",
+  "suggestedFDVinIMD": "540.54054054",
+  "fiatReference": {
+    "usd": "5.55",
+    "date": "2026-10-16",
+    "source": "https://dexscreener.com/ethereum/0xb07d640fd9e2eb9dc81b953c8e4fd006bdfeaf276010fb5418eb763ca15abfb3"
+  },
+  "projectLaunch": {
+    "status": "not-broadcast-by-this-tool",
+    "token": null,
+    "transactionHash": null
+  },
+  "caveat": "This observation is not a reservation. Recheck before signing; derive ordinal from the final launch receipt."
+}

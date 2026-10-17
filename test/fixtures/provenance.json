@@ -1,0 +1,108 @@
+{
+  "chainId": 1,
+  "blockNumber": 26208519,
+  "blockHash": "0xc3936c45f84438a95414cb8f4969e52d49cac97a69809bae13e6ac578df73157",
+  "timestamp": 1792194875,
+  "source": "Ethereum JSON-RPC (read-only)",
+  "simulation": "0x0000000000000000000000000802671f2478fb6938535f5a25466cb391e88313",
+  "firstToken": "0xBBe9d1EcBae3D811642f3DFFDF8bC5Ae8ea4514f",
+  "tradeSimulation": {
+    "token": "0x0802671f2478fB6938535f5a25466CB391e88313",
+    "bought": "18437937483548678234138",
+    "soldFor": "49904411058179",
+    "note": "eth_call only; probe code and IMD funding were temporary state overrides, not chain writes"
+  },
+  "accounts": [
+    {
+      "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+      "codeHash": "0x785f1014552b7ce7d5fb7d0c970ca60edee94fd00425d7ca21609acac7ce1293",
+      "codeBytes": 24009,
+      "nonce": 1,
+      "storageKeys": 28
+    },
+    {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "codeHash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131",
+      "codeBytes": 9152,
+      "nonce": 1,
+      "storageKeys": 1
+    },
+    {
+      "address": "0x0802671f2478fB6938535f5a25466CB391e88313",
+      "codeHash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+      "codeBytes": 0,
+      "nonce": 0,
+      "storageKeys": 15
+    },
+    {
+      "address": "0x2df7DCf4D19a7924e00AE96629CC1d1261670eEe",
+      "codeHash": "0xd73decc05e33a0c746d08a72b5a8e1eb0ff4599dd557b45a7cc4462053862d38",
+      "codeBytes": 14874,
+      "nonce": 1,
+      "storageKeys": 0
+    },
+    {
+      "address": "0x801411c6aCeC4Fa80c75c5d3C0eAe13C84f8a173",
+      "codeHash": "0x474f926e1425178a191768de94d3a734dec4b8e8ba8095699e511e8275ab1867",
+      "codeBytes": 7523,
+      "nonce": 7,
+      "storageKeys": 1
+    },
+    {
+      "address": "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e",
+      "codeHash": "0x77e36c08b19959a30dde46dec9abe6208e371ff2f56884a56fe1e1a53615528b",
+      "codeBytes": 23877,
+      "nonce": 1,
+      "storageKeys": 7
+    },
+    {
+      "address": "0xD34a99Bc0f67aE1bbd63C660e6d0b0dd03E263B7",
+      "codeHash": "0x79a1ae149d27d4aae006d4dd75cb834222c9623799bbf34359428aaf66fec3bf",
+      "codeBytes": 22990,
+      "nonce": 1,
+      "storageKeys": 4
+    },
+    {
+      "address": "0xed9A04Fa6693e754661A22502524DF9b1857e544",
+      "codeHash": "0x6b744df4b886fa50c6c3af8e14837d660494b63f21118e661d17e5cc06017ba1",
+      "codeBytes": 11594,
+      "nonce": 1,
+      "storageKeys": 10
+    },
+    {
+      "address": "0x2ABD4B16a9663F4913F35A87A2C3078dF165bF12",
+      "codeHash": "0x62355bddec01793244685cd3effa09d5a5a87a73a3165106a1c725e535d03cb3",
+      "codeBytes": 3145,
+      "nonce": 1,
+      "storageKeys": 0
+    },
+    {
+      "address": "0x892C6AA32956587F66D9C8B0BA8A0934874565f2",
+      "codeHash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+      "codeBytes": 0,
+      "nonce": 0,
+      "storageKeys": 0
+    },
+    {
+      "address": "0xBBe9d1EcBae3D811642f3DFFDF8bC5Ae8ea4514f",
+      "codeHash": "0x20b57a799b1457f36517ef0064b3418266d26ba53072cd5939ba69ae20c70e90",
+      "codeBytes": 145,
+      "nonce": 1,
+      "storageKeys": 0
+    },
+    {
+      "address": "0xc6C965Bd164c483e87d0B550671798e9A3602840",
+      "codeHash": "0xdacaaedc2f955bb870db5e10b08eb9711e7909d4f8bd7463c67df58a8d4f9fb8",
+      "codeBytes": 21126,
+      "nonce": 1,
+      "storageKeys": 16
+    },
+    {
+      "address": "0xDA751d7b02A67284660cF41F93348432dcdBf945",
+      "codeHash": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470",
+      "codeBytes": 0,
+      "nonce": 0,
+      "storageKeys": 6
+    }
+  ]
+}
