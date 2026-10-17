@@ -372,10 +372,10 @@ contract ERC20TLaunchEdgesTest is MainnetState {
         IBurnable(address(t)).burn(1);
     }
 
-    /// @dev Observed behaviour of the captured token implementation, pinned so a change is noticed.
-    ///      It is reported in the findings as an undisclosed property, not asserted as desired:
-    ///      a buyer cannot transfer bought tokens to another ordinary address, before or after the
-    ///      tax decay, while transfers to the owner succeed.
+    /// @dev The captured token implementation's transfer policy (disclosed in docs/SECURITY_REVIEW.md),
+    ///      pinned so a change is noticed: a holder that has code, such as the router that bought,
+    ///      cannot send to an ordinary address before or after the tax decay, while sending to the
+    ///      owner succeeds. A wallet's own direct transfer is covered in the invariant handler.
     function test_observedHolderToHolderTransfersAreRejectedByTheTokenImplementation() public {
         IERC20T t = IERC20T(_launch(PRICE, false));
         SwapHarness buyer = new SwapHarness(app.POOL_MANAGER());

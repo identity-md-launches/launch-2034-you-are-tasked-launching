@@ -21,6 +21,8 @@ contract LaunchInvariantHandler is Test {
     address public immutable imd;
     address public immutable poolManager;
     SwapHarness[] public actors;
+    // Code-free holders. They receive tokens only from the owner, which the transfer policy allows.
+    address[] public wallets;
 
     // Ghost state
     uint256 public launchCalls;
@@ -39,6 +41,15 @@ contract LaunchInvariantHandler is Test {
     uint256 public transfers;
     uint256 public transferRejections;
     uint256 public taxEdits;
+    uint256 public ownerGifted;
+    uint256 public ownerGiftFailures;
+    uint256 public walletTransfers;
+    uint256 public walletTransferFailures;
+    uint256 public relayedRejections;
+    uint256 public relayedSuccesses;
+    uint256 public walletToCodeRejections;
+    uint256 public walletToCodeSuccesses;
+    uint256 public contractTransferSuccesses;
     bool public sawLaunchingStatus;
 
     constructor(ERC20TLaunch app_, uint256 actors_) {
@@ -48,7 +59,16 @@ contract LaunchInvariantHandler is Test {
         poolManager = app_.POOL_MANAGER();
         for (uint256 i; i < actors_; i++) {
             actors.push(new SwapHarness(poolManager));
+            wallets.push(makeAddr(string(abi.encodePacked("wallet", vm.toString(i)))));
         }
+    }
+
+    function walletCount() external view returns (uint256) {
+        return wallets.length;
+    }
+
+    function walletAt(uint256 i) external view returns (address) {
+        return wallets[i];
     }
 
     function actorCount() external view returns (uint256) {
@@ -131,9 +151,58 @@ contract LaunchInvariantHandler is Test {
         vm.prank(from);
         try IBurnableTaxToken(ghostToken).transfer(to, amount) {
             transfers++;
+            // The implementation's documented policy rejects a holder with code sending to anyone but
+            // the owner, the pool or a distributor; actors are none of those to each other.
+            contractTransferSuccesses++;
         } catch {
-            // The captured implementation rejects holder-to-holder transfers; see the findings report.
             transferRejections++;
+        }
+    }
+
+    /// @dev Owner hands part of the creator allocation to a wallet. Owner-side transfers always pass.
+    function ownerGift(uint256 walletSeed, uint256 amountSeed) external {
+        if (!launched()) return;
+        uint256 held = ITestToken(ghostToken).balanceOf(owner);
+        if (held == 0) return;
+        uint256 amount = bound(amountSeed, 1, held < 1_000_000 ether ? held : 1_000_000 ether);
+        vm.prank(owner);
+        try IBurnableTaxToken(ghostToken).transfer(_wallet(walletSeed), amount) {
+            ownerGifted += amount;
+        } catch {
+            ownerGiftFailures++;
+        }
+    }
+
+    /// @dev A wallet moves its own balance. Directly (msg.sender == from == tx.origin) to another
+    ///      wallet it must pass untaxed; relayed (tx.origin differs) or to code it must be rejected.
+    function walletTransfer(uint256 fromSeed, uint256 toSeed, uint256 amountSeed, uint8 mode) external {
+        if (!launched()) return;
+        address from = _wallet(fromSeed);
+        uint256 held = ITestToken(ghostToken).balanceOf(from);
+        if (held == 0) return;
+        uint256 amount = bound(amountSeed, 1, held);
+        mode = mode % 3;
+        if (mode == 0) {
+            vm.prank(from, from);
+            try IBurnableTaxToken(ghostToken).transfer(_wallet(toSeed), amount) {
+                walletTransfers++;
+            } catch {
+                walletTransferFailures++;
+            }
+        } else if (mode == 1) {
+            vm.prank(from);
+            try IBurnableTaxToken(ghostToken).transfer(_wallet(toSeed), amount) {
+                relayedSuccesses++;
+            } catch {
+                relayedRejections++;
+            }
+        } else {
+            vm.prank(from, from);
+            try IBurnableTaxToken(ghostToken).transfer(_actor(toSeed), amount) {
+                walletToCodeSuccesses++;
+            } catch {
+                walletToCodeRejections++;
+            }
         }
     }
 
@@ -169,5 +238,9 @@ contract LaunchInvariantHandler is Test {
 
     function _actor(uint256 seed) internal view returns (address) {
         return address(actors[seed % actors.length]);
+    }
+
+    function _wallet(uint256 seed) internal view returns (address) {
+        return wallets[seed % wallets.length];
     }
 }

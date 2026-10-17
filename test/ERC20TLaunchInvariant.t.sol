@@ -76,8 +76,29 @@ contract ERC20TLaunchInvariantTest is MainnetState {
 
     function invariant_ownerAllocationIsExactlyFivePercent() public view {
         if (!handler.launched()) return;
-        // No handler action moves tokens to or from the owner, so the creator allocation is untouched.
-        assertEq(ITestToken(app.token()).balanceOf(OWNER), app.CREATOR_SUPPLY());
+        // Only the owner's own gifts move the creator allocation; swaps and fees never touch it.
+        assertEq(ITestToken(app.token()).balanceOf(OWNER), app.CREATOR_SUPPLY() - handler.ownerGifted());
+        assertEq(handler.ownerGiftFailures(), 0, "owner transfer rejected");
+    }
+
+    function invariant_walletTransfersAreUntaxedAndConserveTheGiftedAmount() public view {
+        if (!handler.launched()) return;
+        address t = app.token();
+        uint256 held;
+        for (uint256 i; i < handler.walletCount(); i++) {
+            held += ITestToken(t).balanceOf(handler.walletAt(i));
+        }
+        assertEq(held, handler.ownerGifted(), "wallet-to-wallet transfer created, taxed or lost tokens");
+    }
+
+    /// @dev The token implementation's transfer policy, as disclosed in docs/SECURITY_REVIEW.md: a
+    ///      wallet's own direct transfer to a wallet always passes; a relayed wallet call, a wallet
+    ///      sending to code, and code sending to a non-owner are rejected, during and after decay.
+    function invariant_transferPolicyMatchesTheDisclosure() public view {
+        assertEq(handler.walletTransferFailures(), 0, "direct wallet transfer rejected");
+        assertEq(handler.relayedSuccesses(), 0, "relayed wallet transfer accepted");
+        assertEq(handler.walletToCodeSuccesses(), 0, "wallet sent to non-distributor code");
+        assertEq(handler.contractTransferSuccesses(), 0, "contract holder sent to non-owner");
     }
 
     function invariant_tradersNeverHoldMoreThanThePoolReleased() public view {
@@ -154,7 +175,16 @@ contract ERC20TLaunchInvariantTest is MainnetState {
         handler.buy(1, 2 ether);
         assertEq(handler.buys(), 2);
         handler.transferTokens(0, 2, 1e18);
-        assertEq(handler.transfers() + handler.transferRejections(), 1);
+        assertEq(handler.transferRejections(), 1);
+        handler.ownerGift(0, 1_000 ether);
+        assertEq(handler.ownerGifted(), 1_000 ether);
+        handler.walletTransfer(0, 1, 400 ether, 0);
+        assertEq(handler.walletTransfers(), 1);
+        assertEq(ITestToken(app.token()).balanceOf(handler.walletAt(1)), 400 ether);
+        handler.walletTransfer(0, 1, 1 ether, 1);
+        assertEq(handler.relayedRejections(), 1);
+        handler.walletTransfer(1, 0, 1 ether, 2);
+        assertEq(handler.walletToCodeRejections(), 1);
         handler.burn(1, 1e18);
         assertEq(handler.burned(), 1e18);
         handler.sell(0, 1e18);
@@ -166,12 +196,19 @@ contract ERC20TLaunchInvariantTest is MainnetState {
         handler.ownerSetTax(50);
         assertEq(handler.taxEdits(), 1);
         assertEq(IERC20T(app.token()).taxBps(), 50);
+        // After the decay the same policy holds.
+        handler.walletTransfer(1, 2, 100 ether, 0);
+        assertEq(handler.walletTransfers(), 2);
+        handler.walletTransfer(1, 2, 1 ether, 1);
+        assertEq(handler.relayedRejections(), 2);
 
         invariant_statusNeverRestsInLaunching();
         invariant_launchHappensAtMostOnceAndOnlyForTheOwnerWithValidInputs();
         invariant_adapterNeverHoldsValue();
         invariant_supplyIsFixedMinusVoluntaryBurns();
         invariant_ownerAllocationIsExactlyFivePercent();
+        invariant_walletTransfersAreUntaxedAndConserveTheGiftedAmount();
+        invariant_transferPolicyMatchesTheDisclosure();
         invariant_tradersNeverHoldMoreThanThePoolReleased();
         invariant_quoteTokenIsConserved();
         invariant_initialPositionStaysLockedWithItsLiquidity();
@@ -182,9 +219,13 @@ contract ERC20TLaunchInvariantTest is MainnetState {
 
     function _trackedHolders() internal view returns (address[] memory holders) {
         uint256 n = handler.actorCount();
-        holders = new address[](n + 10);
+        uint256 w = handler.walletCount();
+        holders = new address[](n + w + 10);
         for (uint256 i; i < n; i++) {
             holders[i] = handler.actorAt(i);
+        }
+        for (uint256 i; i < w; i++) {
+            holders[n + 10 + i] = handler.walletAt(i);
         }
         holders[n] = OWNER;
         holders[n + 1] = app.POOL_MANAGER();
