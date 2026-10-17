@@ -23,6 +23,15 @@ export function marketCapIMD(priceX18) {
   return formatUnits(priceX18 * 1_000_000_000n, 18);
 }
 
+/// The launch cannot be retried, so a slipped decimal point must not reach the wallet.
+export function checkPriceBand(priceX18) {
+  if (typeof priceX18 !== 'bigint') throw new Error('Price must be an integer X18 value.');
+  if (priceX18 < CONFIG.minPriceX18 || priceX18 > CONFIG.maxPriceX18) {
+    throw new Error(`Price ${formatUnits(priceX18, 18)} IMD gives an FDV of ${marketCapIMD(priceX18)} IMD, outside the ${marketCapIMD(CONFIG.minPriceX18)} to ${marketCapIMD(CONFIG.maxPriceX18)} IMD band. Check the decimal places; the launch cannot be retried.`);
+  }
+  return priceX18;
+}
+
 export function scheduledTax(elapsedSeconds) {
   const elapsed = Math.max(0, Math.floor(Number(elapsedSeconds)));
   if (!Number.isFinite(elapsed)) throw new Error('Elapsed time must be finite.');

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { Interface, keccak256, zeroPadValue, getCreateAddress } from '../../site/vendor/ethers.min.js';
 import { CONFIG } from '../../site/config.mjs';
-import { CREATED_TOPIC, LAUNCHED_EVENT, controllerRuntimeHash, explorerTransaction, factoryHistory,
+import { CREATED_TOPIC, LAUNCHED_EVENT, checkPriceBand, controllerRuntimeHash, explorerTransaction, factoryHistory,
   launchOrdinal, marketCapIMD, parseLaunchReceipt, priceFromInput, scheduledTax, validAddress,
   verifyController } from '../../site/core.mjs';
 
@@ -51,6 +51,19 @@ test('rejects unsafe, ambiguous and out-of-range prices', () => {
   for (const p of ['0','-1','1.01','1e-7','NaN','','Infinity','0.0000000000000000001',' 0.1','00.1','0x123','<script>']) {
     assert.throws(()=>priceFromInput(p),undefined,p);
   }
+});
+test('price band stops a slipped decimal point before the wallet, around the suggested price', () => {
+  assert.equal(checkPriceBand(CONFIG.suggestedPriceX18), CONFIG.suggestedPriceX18);
+  assert.equal(checkPriceBand(CONFIG.minPriceX18), CONFIG.minPriceX18);
+  assert.equal(checkPriceBand(CONFIG.maxPriceX18), CONFIG.maxPriceX18);
+  assert.equal(marketCapIMD(CONFIG.minPriceX18), '10.0');
+  assert.equal(marketCapIMD(CONFIG.maxPriceX18), '100000.0');
+  for (const p of [1n, 540540n, 540540540n, CONFIG.minPriceX18 - 1n, CONFIG.maxPriceX18 + 1n, 540_540_540_540_540_540n, 10n ** 18n]) {
+    assert.throws(() => checkPriceBand(p), /band/, String(p));
+  }
+  assert.throws(() => checkPriceBand(540540540540), /integer/);
+  // The application accepts the whole 1..1e18 range; the band is the website's guard only.
+  assert.equal(priceFromInput('0.000000000000000001'), 1n);
 });
 test('tax schedule has exact minute transitions and an unbreakable 1% floor', () => {
   for (const [elapsed,bps] of [[-1,9900],[0,9900],[59,9900],[60,9800],[119,9800],[120,9700],[5879,200],[5880,100],[10**12,100]]) {

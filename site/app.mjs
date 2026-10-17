@@ -1,6 +1,6 @@
 import { BrowserProvider, Contract, JsonRpcProvider, FetchRequest, formatUnits } from './vendor/ethers.min.js';
 import { CONFIG, TOKEN_ABI } from './config.mjs';
-import { assertMainnet, factoryHistory, launchOrdinal, parseLaunchReceipt, priceFromInput,
+import { assertMainnet, checkPriceBand, factoryHistory, launchOrdinal, parseLaunchReceipt, priceFromInput,
   marketCapIMD, scheduledTax, sameAddress, verifyController, explorerAddress, explorerTransaction } from './core.mjs';
 
 const $ = id => document.getElementById(id);
@@ -82,8 +82,12 @@ $('tax-slider').addEventListener('input', event => {
 });
 $('price').addEventListener('input', () => {
   invalidateReview();
-  try { $('fdv').textContent = `${Number(marketCapIMD(priceFromInput($('price').value))).toLocaleString(undefined, { maximumFractionDigits: 6 })} IMD`; }
-  catch { $('fdv').textContent = 'Enter a valid price'; }
+  try {
+    const price = priceFromInput($('price').value);
+    $('fdv').textContent = `${Number(marketCapIMD(price)).toLocaleString(undefined, { maximumFractionDigits: 6 })} IMD`;
+    try { checkPriceBand(price); $('fdv').classList.remove('error'); }
+    catch { $('fdv').classList.add('error'); $('fdv').textContent += ' · outside the 10 to 100,000 IMD band'; }
+  } catch { $('fdv').textContent = 'Enter a valid price'; $('fdv').classList.remove('error'); }
 });
 $('allow-prior').addEventListener('change', invalidateReview);
 $('controller').addEventListener('input', () => { invalidateReview(); resetApplicationDisplay();
@@ -255,7 +259,7 @@ $('launch-form').addEventListener('submit', async event => {
     const app = await loadApplication(state.browser);
     const epoch = state.epoch;
     if (await app.status() !== 0n) throw new Error('This application is no longer ready to launch. Refresh its status.');
-    const price = priceFromInput($('price').value);
+    const price = checkPriceBand(priceFromInput($('price').value));
     const block = await state.browser.getBlock('latest');
     feedback('launch-feedback', 'Scanning the full factory history and simulating the launch…');
     const history = await factoryHistory(state.browser, block.number);
@@ -302,6 +306,7 @@ $('send-launch').addEventListener('click', async () => {
     const block = await state.browser.getBlock('latest');
     if (BigInt(block.timestamp) >= pending.deadline) throw new Error('The review expired. Simulate again.');
     const writer = app.connect(await state.browser.getSigner(CONFIG.owner));
+    checkPriceBand(pending.price);
     await writer.launch.staticCall(pending.price, pending.deadline, pending.requireFirst);
     if (pending.epoch !== state.epoch) throw new Error('Wallet or parameters changed. Simulate again.');
     feedback('send-status', 'Confirm the launch in your wallet.');

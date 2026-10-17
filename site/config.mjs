@@ -13,6 +13,9 @@ export const CONFIG = Object.freeze({
   rpcUrl: 'https://ethereum-rpc.publicnode.com',
   supply: 1_000_000_000n * 10n ** 18n,
   suggestedPriceX18: 540_540_540_540n,
+  // Website band around the suggested price: an FDV of 10 to 100,000 IMD. The application only bounds 1..1e18.
+  minPriceX18: 10_000_000_000n,
+  maxPriceX18: 100_000_000_000_000n,
   factoryCodeHash: '0x474f926e1425178a191768de94d3a734dec4b8e8ba8095699e511e8275ab1867',
   quoteObservation: Object.freeze({
     usd: '5.55',

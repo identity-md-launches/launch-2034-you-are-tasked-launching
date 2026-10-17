@@ -8,16 +8,28 @@ import {MainnetState} from "./fixtures/MainnetState.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {SwapHarness} from "./helpers/SwapHarness.sol";
 import {ReentryProbe} from "./helpers/ReentryProbe.sol";
+import {HolderProbe} from "./helpers/HolderProbe.sol";
 
 interface ITokenOwnerControls {
     function setTaxBps(uint16 bps) external;
     function setFeeRecipient(address recipient) external;
     function setFeeDecayRecipient(address recipient) external;
+    function setDistributors(address[] calldata accounts, bool allowed) external;
+    function setUseGlobalDistributors(bool enabled) external;
+    function isDistributor(address account) external view returns (bool);
+    function isLocalDistributor(address account) external view returns (bool);
+    function useGlobalDistributors() external view returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transfer(address to, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    function allowance(address holder, address spender) external view returns (uint256);
 }
 
 contract ERC20TLaunchTest is MainnetState {
     address internal constant OWNER = 0x3d6a89C8751a45DD577a4C1F3b34E71C58236193;
     uint256 internal constant PRICE = 540_540_540_540;
+    // InvalidTransfer(): the implementation's transfer-policy error.
+    bytes4 internal constant INVALID_TRANSFER = 0x2f352531;
     ERC20TLaunch internal app;
 
     function setUp() public {
@@ -491,6 +503,122 @@ contract ERC20TLaunchTest is MainnetState {
         assertEq(t.feeDecayRecipient(), address(this));
         vm.warp(block.timestamp + 100 minutes);
         assertEq(t.taxBps(), 50);
+    }
+
+    function test_transferPolicySelectorsMatchTheVerifiedImplementation() public pure {
+        // Signatures from the implementation's verified source; selectors are in its runtime dispatcher.
+        assertEq(ITokenOwnerControls.setDistributors.selector, bytes4(0xb12d85ca));
+        assertEq(ITokenOwnerControls.setUseGlobalDistributors.selector, bytes4(0xc82d2bbf));
+        assertEq(ITokenOwnerControls.isDistributor.selector, bytes4(0x8f0c86fa));
+        assertEq(ITokenOwnerControls.isLocalDistributor.selector, bytes4(0x997fe757));
+        assertEq(ITokenOwnerControls.useGlobalDistributors.selector, bytes4(0xc174c40f));
+    }
+
+    function test_directWalletTransfersSucceedDuringAndAfterDecay() public {
+        IERC20T t = IERC20T(_launch(PRICE, false));
+        ITokenOwnerControls token = ITokenOwnerControls(address(t));
+        address alice = makeAddr("alice");
+        address bob = makeAddr("bob");
+        // A transfer from or to the owner always passes.
+        vm.prank(OWNER);
+        assertTrue(token.transfer(alice, 1_000 ether));
+        // A wallet sending its own balance in its own transaction passes while the launch tax is 99%.
+        assertEq(t.taxBps(), 9900);
+        vm.prank(alice, alice);
+        assertTrue(token.transfer(bob, 400 ether));
+        assertEq(t.balanceOf(bob), 400 ether);
+        vm.warp(block.timestamp + 98 minutes);
+        assertEq(t.taxBps(), 100);
+        vm.prank(bob, bob);
+        assertTrue(token.transfer(alice, 100 ether));
+        assertEq(t.balanceOf(alice), 700 ether);
+        assertEq(t.balanceOf(bob), 300 ether);
+        // Wallet-to-wallet transfers are untaxed; the tax applies to pool swaps only.
+        assertEq(t.balanceOf(alice) + t.balanceOf(bob), 1_000 ether);
+    }
+
+    function test_holderTransfersThroughSpendersOrContractsRevertWithInvalidTransfer() public {
+        IERC20T t = IERC20T(_launch(PRICE, false));
+        ITokenOwnerControls token = ITokenOwnerControls(address(t));
+        address alice = makeAddr("alice");
+        address bob = makeAddr("bob");
+        HolderProbe custody = new HolderProbe();
+        vm.prank(OWNER);
+        token.transfer(alice, 1_000 ether);
+        vm.prank(OWNER);
+        token.transfer(address(custody), 1_000 ether);
+        // A spender cannot move a holder's balance, even with an allowance.
+        vm.prank(alice);
+        token.approve(bob, 500 ether);
+        assertEq(token.allowance(alice, bob), 500 ether);
+        vm.prank(bob, bob);
+        vm.expectRevert(INVALID_TRANSFER);
+        token.transferFrom(alice, bob, 500 ether);
+        // A holder that has code cannot send to a wallet.
+        vm.expectRevert(INVALID_TRANSFER);
+        custody.sendTokens(address(t), bob, 1 ether);
+        // A wallet cannot send to code that is not the owner, the pool or an approved distributor.
+        vm.prank(alice, alice);
+        vm.expectRevert(INVALID_TRANSFER);
+        token.transfer(address(custody), 1 ether);
+        // A wallet call relayed by another account (tx.origin differs) is not a direct wallet call.
+        vm.prank(alice);
+        vm.expectRevert(INVALID_TRANSFER);
+        token.transfer(bob, 1 ether);
+        // The same policy holds after the launch tax has fully decayed.
+        vm.warp(block.timestamp + 98 minutes);
+        vm.expectRevert(INVALID_TRANSFER);
+        custody.sendTokens(address(t), bob, 1 ether);
+        vm.prank(bob, bob);
+        vm.expectRevert(INVALID_TRANSFER);
+        token.transferFrom(alice, bob, 500 ether);
+        assertEq(t.balanceOf(alice), 1_000 ether);
+        assertEq(t.balanceOf(address(custody)), 1_000 ether);
+        assertEq(t.balanceOf(bob), 0);
+    }
+
+    function test_ownerCanApproveAndRevokeDistributorContracts() public {
+        IERC20T t = IERC20T(_launch(PRICE, false));
+        ITokenOwnerControls token = ITokenOwnerControls(address(t));
+        address bob = makeAddr("bob");
+        HolderProbe distributor = new HolderProbe();
+        address[] memory accounts = new address[](1);
+        accounts[0] = address(distributor);
+        vm.prank(OWNER);
+        token.transfer(address(distributor), 1_000 ether);
+        // The implementation opts every new token into the hook owner's shared registry.
+        assertTrue(token.useGlobalDistributors());
+        assertFalse(token.isDistributor(address(distributor)));
+        vm.expectRevert();
+        token.setDistributors(accounts, true);
+        vm.prank(OWNER);
+        token.setDistributors(accounts, true);
+        assertTrue(token.isLocalDistributor(address(distributor)));
+        assertTrue(token.isDistributor(address(distributor)));
+        assertTrue(distributor.sendTokens(address(t), bob, 10 ether));
+        assertEq(t.balanceOf(bob), 10 ether);
+        // Approved code can also pull from a wallet that granted it an allowance.
+        vm.prank(bob);
+        token.approve(address(distributor), 10 ether);
+        assertTrue(distributor.pullTokens(address(t), bob, address(distributor), 4 ether));
+        assertEq(t.balanceOf(bob), 6 ether);
+        vm.prank(OWNER);
+        token.setDistributors(accounts, false);
+        assertFalse(token.isDistributor(address(distributor)));
+        vm.expectRevert(INVALID_TRANSFER);
+        distributor.sendTokens(address(t), bob, 1 ether);
+        // Only code can be approved; a wallet cannot become a distributor.
+        address[] memory wallets = new address[](1);
+        wallets[0] = bob;
+        vm.prank(OWNER);
+        vm.expectRevert();
+        token.setDistributors(wallets, true);
+        // The owner can opt out of the shared registry.
+        vm.expectRevert();
+        token.setUseGlobalDistributors(false);
+        vm.prank(OWNER);
+        token.setUseGlobalDistributors(false);
+        assertFalse(token.useGlobalDistributors());
     }
 
     function _launch(uint256 price, bool first) internal returns (address) {
